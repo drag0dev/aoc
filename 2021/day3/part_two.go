@@ -7,69 +7,76 @@ import (
 	"strings"
 )
 
-func main(){
-    fileContent, _ := ioutil.ReadFile("input.txt")
-    var input []string = strings.Split(string(fileContent), "\n")
+func oneMostCommon(arr []string, index int)(int, int){
     var zero, one int
-    var prefixOxygen, prefixScrubber string
-    var oxygenStr, scrubberStr string
-    var oxygenArray, scrubberArray []string
-
-    for currentIndex := 0; currentIndex < 12; currentIndex++{
-        zero = 0
-        one = 0
-
-        // count zeroes and ones
-        for _, line := range input{
-            if len(line) == 0{
-                continue
-            }
-            if line[currentIndex] == '1'{
-                one++
-            }else if line[currentIndex] == '0'{
-                zero++
-            }
-        }
-
-        // update prefix
-        if one > zero{
-            prefixOxygen += "1"
-            prefixScrubber += "0"
-        }else if zero > one{
-            prefixOxygen += "0"
-            prefixScrubber += "1"
-        }else {
-            prefixOxygen += "1"
-            prefixScrubber += "0"
-        }
-
-        oxygenArray = nil
-        scrubberArray = nil
-        // check how many strings have given prefix
-        for _, line := range input{
-            if strings.HasPrefix(line, prefixOxygen){
-                oxygenArray = append(oxygenArray, line)
-            }else if strings.HasPrefix(line, prefixScrubber){
-                scrubberArray = append(scrubberArray, line)
-            }
-        }
-
-        // check if ther is only one string
-        if len(oxygenArray) == 1{
-            oxygenStr = oxygenArray[0]
-        }
-        if len(scrubberArray) == 1{
-            scrubberStr = scrubberArray[0]
-        }
-        if len(scrubberArray) == 4{
-            for _, num := range scrubberArray{
-                number, _ := strconv.ParseInt(num, 2, 64)
-                fmt.Println(number)
-            }
+    for _, line := range arr{
+        if line[index] == '0'{
+            zero++
+        }else{
+            one++
         }
     }
 
-    scrubber, _ := strconv.ParseInt(scrubberStr, 2, 64)
-    oxygen, _ := strconv.ParseInt(oxygenStr, 2, 64)
-    fmt.Println(scrubber, oxygen)
+    return zero, one
+}
+
+func newArray(arr []string, index int, number string)(*[]string){
+    var newArr []string
+    for _, line := range arr{
+        if string(line[index]) == number{
+            newArr = append(newArr, line)
+        }
+    }
+    return &newArr
+}
+
+func main(){
+    contents, _ := ioutil.ReadFile("input.txt")
+
+    var inputLines []string = strings.Split(string(contents), "\n")
+    if len(inputLines[len(inputLines)-1])==0{
+            inputLines = inputLines[:len(inputLines)-1]
+    }
+
+    var oxygenArr *[]string = &inputLines
+    var scrubberArr *[]string = &inputLines
+    var oxygen, scrubber string
+
+    for index :=0; index < 12; index++{
+        // oxygen
+        if oxygen == ""{
+            zero, one := oneMostCommon(*oxygenArr, index)
+            if one > zero || one == zero {
+                oxygenArr = newArray(*oxygenArr, index, "1")
+            }else{
+                oxygenArr = newArray(*oxygenArr, index, "0")
+            }
+            if len(*oxygenArr) == 1 {
+                oxygen = (*oxygenArr)[0]
+            }
+        }
+
+        // scrubber
+        if scrubber == ""{
+            zero, one := oneMostCommon(*scrubberArr, index)
+            if one > zero || zero == one{
+                scrubberArr = newArray(*scrubberArr, index, "0")
+            }else{
+                scrubberArr = newArray(*scrubberArr, index, "1")
+            }
+            if len(*scrubberArr) == 1 {
+                scrubber = (*scrubberArr)[0]
+            }
+        }
+
+
+        if scrubber != "" && oxygen != ""{
+            break
+        }
+    }
+
+    scrubberNum, _ := strconv.ParseInt(scrubber, 2, 64)
+    oxygenNum, _ := strconv.ParseInt(oxygen, 2, 64)
+
+    fmt.Println(scrubberNum * oxygenNum)
 }
