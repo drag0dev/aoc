@@ -1,9 +1,7 @@
-# advent of code 2021
-done in golang
+# Advent of Code
+i use advent of code to learn or mess around with languages so solutions are usually really messy and horribly written
+#
 
-## 2021
-Done in GO
-* day 4, part two not getting correct results
-
-## 2020
-Done in Rust
+2022 - zig  
+2021 - go  
+2020 - rust  
