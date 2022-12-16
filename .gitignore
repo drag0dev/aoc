@@ -2,4 +2,4 @@
 2022/**/build.zig
 2022/**/zig-cache
 2022/**/zig-out
-2022/**/input
+*/**/input
