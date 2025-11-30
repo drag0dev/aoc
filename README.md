@@ -9,3 +9,4 @@ i use advent of code to mess around with languages so solutions are usually real
 2022 - Zig  
 2023 - Elixir  
 2024 - Gleam  
+2025 - Haskell  
